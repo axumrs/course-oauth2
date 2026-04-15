@@ -32,6 +32,34 @@ pub enum Error {
     #[error(transparent)]
     Other(#[from] anyhow::Error),
 }
+impl Error {
+    pub fn custom(msg: impl Into<String>) -> Self {
+        Self::Custom(msg.into())
+    }
+
+    pub fn not_found(msg: impl Into<String>) -> Self {
+        Self::NotFound(msg.into())
+    }
+
+    pub fn bad_request(msg: impl Into<String>) -> Self {
+        Self::BadRequest(msg.into())
+    }
+
+    pub fn http_code(&self) -> u16 {
+        match self {
+            &Self::Custom(_)
+            | &Self::Validation(_)
+            | &Self::Validations(_)
+            | &Self::BadRequest(_) => 400,
+
+            &Self::Unauthorized => 401,
+
+            &Self::NotFound(_) => 404,
+
+            _ => 500,
+        }
+    }
+}
 
 impl IntoResponse for Error {
     fn into_response(self) -> axum::response::Response {

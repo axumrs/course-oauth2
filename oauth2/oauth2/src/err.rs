@@ -1,5 +1,7 @@
 use axum::response::IntoResponse;
 
+use crate::resp;
+
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
     #[error("数据库错误")]
@@ -64,6 +66,6 @@ impl Error {
 impl IntoResponse for Error {
     fn into_response(self) -> axum::response::Response {
         tracing::error!("{:?}", self);
-        axum::response::Json(self.to_string()).into_response()
+        resp::err(self).as_resp().into_response()
     }
 }

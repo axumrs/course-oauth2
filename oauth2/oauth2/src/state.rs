@@ -11,6 +11,9 @@ pub struct AppState {
 
 pub type ArcAppState = Arc<AppState>;
 
-pub fn new_arc_state(cfg: Arc<Config>, pool: PgPool) -> ArcAppState {
-    Arc::new(AppState { cfg, pool })
+pub fn new_arc_state(cfg: Config, pool: PgPool) -> ArcAppState {
+    Arc::new(AppState {
+        cfg: Arc::new(cfg),
+        pool,
+    })
 }

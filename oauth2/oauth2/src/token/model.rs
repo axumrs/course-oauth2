@@ -13,13 +13,13 @@ pub struct Token {
 }
 
 impl Token {
-    pub fn try_new(user_id: impl Into<String>) -> crate::Result<Self> {
+    pub fn try_new(user_id: impl Into<String>, token_expired: i64) -> crate::Result<Self> {
         let s = Self {
             id: utils::new_id(),
             user_id: user_id.into(),
             nonce: utils::new_nonce(),
             created_at: chrono::Utc::now(),
-            expired_at: chrono::Utc::now(),
+            expired_at: chrono::Utc::now() + chrono::Duration::minutes(token_expired),
             ..Default::default()
         };
 

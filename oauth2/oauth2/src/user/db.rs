@@ -7,6 +7,24 @@ pub enum FindBy<'a> {
     Email(&'a str),
 }
 
+pub async fn is_exist(
+    e: impl PgExecutor<'_>,
+    username: &str,
+    email: &str,
+    id: Option<&str>,
+) -> Result<bool> {
+    let mut q = QueryBuilder::new(r#"SELECT COUNT(*) FROM "users" WHERE 1=1"#);
+    q.push(r#" AND ("username" = "#).push_bind(username);
+    q.push(r#" OR "email" = "#).push_bind(email).push(r#")"#);
+
+    if let Some(id) = id {
+        q.push(r#" AND "id" <> "#).push_bind(id);
+    }
+
+    let count: i64 = q.build_query_scalar().fetch_one(e).await?;
+    Ok(count > 0)
+}
+
 pub async fn create(e: impl PgExecutor<'_>, m: model::User) -> Result<model::User> {
     let mut q = QueryBuilder::new(
         r#"INSERT INTO "users" ("id", "username", "email", "password", "status", "created_at") "#,

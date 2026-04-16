@@ -17,6 +17,7 @@ pub async fn new(
         &frm.desc,
         &frm.homepage,
         &frm.callback,
+        model::ApplicationStatus::Active,
     );
     let app = db::create(&state.pool, m).await?;
 

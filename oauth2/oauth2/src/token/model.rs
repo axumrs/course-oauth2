@@ -6,6 +6,7 @@ use crate::utils;
 pub struct Token {
     pub id: String,
     pub user_id: String,
+    #[serde(skip_serializing)]
     pub nonce: Vec<u8>,
     pub token: String,
     pub created_at: chrono::DateTime<chrono::Utc>,

@@ -3,6 +3,7 @@ use serde::{Deserialize, Serialize};
 use crate::utils;
 
 #[derive(Debug, Default, sqlx::Type, Serialize, Deserialize)]
+#[sqlx(type_name = "application_status")]
 pub enum ApplicationStatus {
     #[default]
     Pending,
@@ -30,6 +31,7 @@ impl Application {
         description: S,
         homepage_url: S,
         callback_url: S,
+        status: ApplicationStatus,
     ) -> Self {
         Self {
             id: utils::new_id(),
@@ -40,6 +42,7 @@ impl Application {
             callback_url: callback_url.into(),
             created_at: chrono::Utc::now(),
             updated_at: chrono::Utc::now(),
+            status,
             ..Default::default()
         }
     }

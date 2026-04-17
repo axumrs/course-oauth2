@@ -1,7 +1,11 @@
-use sqlx::{PgExecutor, Result, query, query_as};
+use sqlx::{PgExecutor, Result, query, query_as, query_scalar};
 
 use super::model;
 
+pub async fn count(e: impl PgExecutor<'_>, application_id: &str) -> Result<i64> {
+    let sql = r#"SELECT COUNT(*) FROM "application_secrets" WHERE "application_id" = $1"#;
+    query_scalar(sql).bind(application_id).fetch_one(e).await
+}
 pub async fn create(
     e: impl PgExecutor<'_>,
     m: model::ApplicationSecret,

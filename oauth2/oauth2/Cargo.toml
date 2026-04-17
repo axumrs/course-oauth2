@@ -12,7 +12,6 @@ dotenv = "0.15.0"
 rand = "0.10.1"
 serde = { version = "1.0.228", features = ["derive"] }
 serde_json = "1.0.149"
-serde_with = "3.18.0"
 sha2 = "0.10.9"
 sqlx = { version = "0.8.6", features = [
     "runtime-tokio",
@@ -29,5 +28,6 @@ tokio = { version = "1.51.1", features = [
 ] }
 tracing = "0.1.44"
 tracing-subscriber = { version = "0.3.23", features = ["env-filter"] }
+utf8_slice = "1.0.0"
 validator = { version = "0.20.0", features = ["derive"] }
 xid = "1.1.1"

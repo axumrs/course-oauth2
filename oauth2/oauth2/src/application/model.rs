@@ -19,6 +19,7 @@ pub struct Application {
     pub description: String,
     pub homepage_url: String,
     pub callback_url: String,
+    #[serde(skip_serializing)]
     pub status: ApplicationStatus,
     pub created_at: chrono::DateTime<chrono::Utc>,
     pub updated_at: chrono::DateTime<chrono::Utc>,

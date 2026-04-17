@@ -1,4 +1,7 @@
-use axum::{Router, middleware, routing::post};
+use axum::{
+    Router, middleware,
+    routing::{get, post},
+};
 
 use crate::{ArcAppState, application, auth, mw};
 
@@ -21,7 +24,11 @@ fn auth_init(state: ArcAppState) -> Router {
 
 fn application_init(state: ArcAppState) -> Router {
     Router::new()
-        .route("/", post(application::handler::new))
+        .route(
+            "/",
+            post(application::handler::new).get(application::handler::list),
+        )
+        .route("/{id}", get(application::handler::find))
         .layer(middleware::from_extractor_with_state::<
             mw::UserAuth,
             ArcAppState,

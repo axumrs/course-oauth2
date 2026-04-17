@@ -11,5 +11,7 @@ const newApplicationApi = (data: ApplicationNewForm) =>
   $post<Application>("/api/application", data);
 
 const applicationListApi = () => $get<Application[]>("/api/application");
+const applicationDetailApi = (id: string) => () =>
+  $get<Application>(`/api/application/${id}`);
 
-export { newApplicationApi, applicationListApi };
+export { newApplicationApi, applicationListApi, applicationDetailApi };

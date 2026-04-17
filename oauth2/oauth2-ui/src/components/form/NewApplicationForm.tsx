@@ -8,14 +8,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
@@ -24,6 +17,7 @@ import { cn } from "@/lib/utils";
 import { useMutation } from "@tanstack/react-query";
 import { newApplicationApi } from "@/api/application";
 import ErrorMsg from "../ErrorMsg";
+import { Link } from "react-router-dom";
 
 const formSchema = z.object({
   name: z.string().min(3, "请输入应用名称"),
@@ -58,10 +52,10 @@ export default function NewApplicationForm({
   };
   return (
     <Card className={cn(className)}>
-      <CardHeader>
+      {/* <CardHeader>
         <CardTitle>创建新的 OAuth 应用</CardTitle>
         <CardDescription>填写以下表单，提交你的申请。</CardDescription>
-      </CardHeader>
+      </CardHeader> */}
       <CardContent>
         <ErrorMsg err={error} />
         <form id="form" onSubmit={form.handleSubmit(onSubmit)}>
@@ -164,8 +158,8 @@ export default function NewApplicationForm({
           <Button type="submit" form="form" disabled={isPending}>
             提交申请
           </Button>
-          <Button type="button" variant="link" onClick={() => form.reset()}>
-            取消
+          <Button type="button" variant="link" asChild>
+            <Link to="/application">取消</Link>
           </Button>
         </Field>
       </CardFooter>

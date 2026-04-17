@@ -31,6 +31,9 @@ pub enum Error {
     #[error("未授权")]
     Unauthorized,
 
+    #[error("{0}")]
+    Forbidden(String),
+
     #[error(transparent)]
     Other(#[from] anyhow::Error),
 }
@@ -45,6 +48,10 @@ impl Error {
 
     pub fn bad_request(msg: impl Into<String>) -> Self {
         Self::BadRequest(msg.into())
+    }
+
+    pub fn forbidden(msg: impl Into<String>) -> Self {
+        Self::Forbidden(msg.into())
     }
 
     pub fn http_code(&self) -> u16 {

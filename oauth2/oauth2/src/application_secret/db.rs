@@ -34,6 +34,19 @@ pub async fn find(
         .await
 }
 
+pub async fn find_by_secret(
+    e: impl PgExecutor<'_>,
+    secret: &str,
+    application_id: &str,
+) -> Result<Option<model::ApplicationSecret>> {
+    let sql = r#"SELECT "id", "application_id", "secret", "nonce", "created_at" FROM "application_secrets" WHERE "secret" = $1 AND "application_id" = $2"#;
+    query_as(sql)
+        .bind(secret)
+        .bind(application_id)
+        .fetch_optional(e)
+        .await
+}
+
 pub async fn list(
     e: impl PgExecutor<'_>,
     application_id: &str,

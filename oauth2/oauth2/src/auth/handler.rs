@@ -35,7 +35,11 @@ pub async fn user_login(
         return Err(Error::not_found("用户名/密码错误"));
     }
 
-    let m = token_model::Token::try_new(&user.id, state.cfg.token_expired)?;
+    let m = token_model::Token::try_new(
+        &user.id,
+        state.cfg.token_expired,
+        token_model::TokenKind::Token,
+    )?;
     let token = match token_db::create(&mut *tx, m).await {
         Ok(v) => v,
         Err(e) => {

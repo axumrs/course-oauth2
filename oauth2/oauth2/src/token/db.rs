@@ -2,7 +2,7 @@ use super::model;
 use sqlx::{PgExecutor, QueryBuilder, Result, query, query_as};
 
 pub async fn create(e: impl PgExecutor<'_>, m: model::Token) -> Result<model::Token> {
-    let sql = r#"INSERT INTO "tokens" ("id", "user_id", "nonce", "token", "created_at", "expired_at") VALUES ($1, $2, $3, $4, $5, $6) RETURNING *"#;
+    let sql = r#"INSERT INTO "tokens" ("id", "user_id", "nonce", "token", "created_at", "expired_at", "kind", "application_id") VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *"#;
     query_as(sql)
         .bind(&m.id)
         .bind(&m.user_id)
@@ -10,6 +10,8 @@ pub async fn create(e: impl PgExecutor<'_>, m: model::Token) -> Result<model::To
         .bind(&m.token)
         .bind(&m.created_at)
         .bind(&m.expired_at)
+        .bind(&m.kind)
+        .bind(&m.application_id)
         .fetch_one(e)
         .await
 }
@@ -21,7 +23,7 @@ pub enum FindBy<'a> {
 
 pub async fn find(e: impl PgExecutor<'_>, f: FindBy<'_>) -> Result<Option<model::Token>> {
     let mut q = QueryBuilder::new(
-        r#"SELECT "id", "user_id", "nonce", "token", "created_at", "expired_at" FROM "tokens" WHERE "expired_at" >= CURRENT_TIMESTAMP AND 1=1"#,
+        r#"SELECT "id", "user_id", "nonce", "token", "created_at", "expired_at", "kind", "application_id" FROM "tokens" WHERE "expired_at" >= CURRENT_TIMESTAMP AND 1=1"#,
     );
     match f {
         FindBy::Id(id) => {

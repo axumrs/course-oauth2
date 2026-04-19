@@ -10,6 +10,7 @@ const ApplicationList = lazy(() => import("@/pages/ApplicationList"));
 const ApplicationLayout = lazy(
   () => import("@/components/layout/ApplicationLayout"),
 );
+const OauthAuthorize = lazy(() => import("@/pages/OauthAuthorize"));
 
 const router = createHashRouter([
   {
@@ -43,6 +44,10 @@ const router = createHashRouter([
         element: <ApplicationList />,
       },
     ],
+  },
+  {
+    path: "/login/oauth/authorize",
+    element: <OauthAuthorize />,
   },
 ]);
 

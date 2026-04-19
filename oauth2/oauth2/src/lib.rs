@@ -1,6 +1,7 @@
 pub mod application;
 pub mod application_secret;
 pub mod auth;
+pub mod authorize;
 mod cfg;
 mod err;
 pub mod init;

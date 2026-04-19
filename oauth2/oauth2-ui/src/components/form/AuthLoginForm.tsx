@@ -29,8 +29,10 @@ const formSchema = z.object({
 
 export default function AuthLoginForm({
   classname = "",
+  callback,
 }: {
   classname?: string;
+  callback?: () => void;
 }) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -45,6 +47,7 @@ export default function AuthLoginForm({
     mutationFn: loginApi,
     onSuccess: (data) => {
       window.sessionStorage.setItem("token", JSON.stringify(data));
+      callback?.();
     },
   });
 

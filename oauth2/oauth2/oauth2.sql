@@ -39,11 +39,34 @@ CREATE TABLE IF NOT EXISTS "application_secrets" (
    "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TYPE "token_kind" AS ENUM (
+    'Token',
+    'AccessToken',
+    'TempAccessToken'
+);
+
 CREATE UNLOGGED TABLE IF NOT EXISTS "tokens" (
     "id" CHAR(20) PRIMARY KEY,
     "user_id" CHAR(20) NOT NULL,
     "nonce" BYTEA NOT NULL,
     "token" TEXT NOT NULL,
+    "kind" token_kind NOT NULL,
+    "application_id" CHAR(20) NOT NULL DEFAULT '',
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "expired_at" TIMESTAMPTZ NOT NULL
+);
+
+CREATE TYPE "authorize_scope" AS ENUM (
+    'User',
+    'ReadUser',
+    'UserEmail'
+);
+
+CREATE TABLE IF NOT EXISTS "authorizes" (
+    "id" CHAR(20) PRIMARY KEY,
+    "application_id" CHAR(20) NOT NULL,
+    "user_id" CHAR(20) NOT NULL,
+    "scope" authorize_scope NOT NULL,
+    "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE("application_id", "user_id")
 );

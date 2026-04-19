@@ -53,7 +53,6 @@ pub async fn authorize(
 
 pub async fn access_token(
     State(state): State<ArcAppState>,
-    user_auth: UserAuth,
     Json(frm): Json<payload::NewAccessToken>,
 ) -> Result<Json<token_model::Token>> {
     frm.validate()?;
@@ -73,10 +72,6 @@ pub async fn access_token(
             return Err(e.into());
         }
     };
-
-    if tmp_token.user_id != user_auth.user.id {
-        return Err(Error::forbidden("主体错误"));
-    }
 
     // 应用密钥
     let app_secret =

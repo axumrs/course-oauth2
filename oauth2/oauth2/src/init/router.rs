@@ -3,17 +3,20 @@ use axum::{
     routing::{delete, get, post},
 };
 
-use crate::{ArcAppState, application, application_secret, auth, authorize, mw};
+use crate::{ArcAppState, application, application_secret, auth, authorize, mw, user};
 
 pub fn init(state: ArcAppState) -> Router {
-    Router::new().nest("/api", api_init(state))
+    Router::new()
+        .nest("/api", api_init(state.clone()))
+        .nest("/login/oauth", access_token_init(state))
 }
 
 fn api_init(state: ArcAppState) -> Router {
     Router::new()
         .nest("/auth", auth_init(state.clone()))
         .nest("/application", application_init(state.clone()))
-        .nest("/login/oauth", authorize_init(state))
+        .nest("/login/oauth", authorize_init(state.clone()))
+        .nest("/user", user_init(state))
 }
 
 fn auth_init(state: ArcAppState) -> Router {
@@ -49,11 +52,26 @@ fn application_init(state: ArcAppState) -> Router {
 fn authorize_init(state: ArcAppState) -> Router {
     Router::new()
         .route("/authorize", post(authorize::handler::authorize))
-        .route("/access_token", post(authorize::handler::access_token))
         .route(
             "/authorize/{application_id}",
             get(authorize::handler::get_authorize),
         )
+        .layer(middleware::from_extractor_with_state::<
+            mw::UserAuth,
+            ArcAppState,
+        >(state.clone()))
+        .with_state(state)
+}
+
+fn access_token_init(state: ArcAppState) -> Router {
+    Router::new()
+        .route("/access_token", post(authorize::handler::access_token))
+        .with_state(state)
+}
+
+fn user_init(state: ArcAppState) -> Router {
+    Router::new()
+        .route("/", get(user::handler::find))
         .layer(middleware::from_extractor_with_state::<
             mw::UserAuth,
             ArcAppState,
